@@ -52,19 +52,19 @@ export default function PostJob() {
 
   return (
     <main>
-      <h1>Post a Dream Job</h1>
-      <p className="subtitle">Describe work that should exist in the world.</p>
+      <h1>Make up a job</h1>
+      <p className="subtitle">If you could hire anyone to do anything, what would the job posting look like?</p>
 
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label htmlFor="title">Job Title *</label>
-          <input name="title" id="title" required placeholder="e.g. Neighborhood Story Collector" />
+          <label htmlFor="title">What&apos;s the job called? *</label>
+          <input name="title" id="title" required placeholder="e.g. Professional Sunset Watcher" />
         </div>
 
         <div className="field">
-          <label htmlFor="description">Description *</label>
+          <label htmlFor="description">What would this person actually do? *</label>
           <textarea name="description" id="description" required
-            placeholder="What does this job involve? Why does it matter?" />
+            placeholder="Paint us a picture. What does a day look like in this job?" />
         </div>
 
         <div className="field">
@@ -84,13 +84,13 @@ export default function PostJob() {
         </div>
 
         <div className="field">
-          <label htmlFor="price">Price / Hourly Rate ($)</label>
+          <label htmlFor="price">What should this pay? ($/hr)</label>
           <input name="price" id="price" type="number" min="0" step="0.01" placeholder="e.g. 30" />
         </div>
 
         <div className="field">
-          <label htmlFor="location">Location</label>
-          <input name="location" id="location" placeholder="e.g. Austin TX, Anywhere" />
+          <label htmlFor="location">Where in the world?</label>
+          <input name="location" id="location" placeholder="e.g. Austin TX, Your neighborhood, The forest" />
         </div>
 
         <div className="field">
@@ -106,19 +106,19 @@ export default function PostJob() {
         <div className="field">
           <label className="checkbox-label">
             <input type="checkbox" checked={hasFunding} onChange={e => setHasFunding(e.target.checked)} />
-            This job needs funding to become real
+            This job needs people to crowdfund it into existence
           </label>
         </div>
 
         {hasFunding && (
           <div className="field">
-            <label htmlFor="funding_goal">Funding Goal ($)</label>
+            <label htmlFor="funding_goal">How much does the world need to chip in? ($)</label>
             <input name="funding_goal" id="funding_goal" type="number" min="1" step="0.01" placeholder="e.g. 500" />
           </div>
         )}
 
         <button type="submit" className="btn btn-primary btn-full" disabled={submitting}>
-          {submitting ? 'Posting...' : 'Post This Job'}
+          {submitting ? 'Sending it...' : 'Put it out there'}
         </button>
       </form>
     </main>

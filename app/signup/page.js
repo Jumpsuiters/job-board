@@ -38,15 +38,15 @@ export default function Signup() {
   return (
     <main>
       <div className="auth-page">
-        <h1>Join the board</h1>
-        <p className="subtitle">Create an account to post and apply to dream jobs</p>
+        <h1>Get on the board</h1>
+        <p className="subtitle">Make up jobs. Fund them into existence. Get hired for things that didn&apos;t exist yesterday.</p>
 
         {error && <div className="error-msg">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="field">
             <label htmlFor="name">Name</label>
-            <input name="name" id="name" required placeholder="What should we call you?" />
+            <input name="name" id="name" required placeholder="Your name (or your alter ego)" />
           </div>
           <div className="field">
             <label htmlFor="email">Email</label>

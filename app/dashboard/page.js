@@ -51,7 +51,7 @@ export default function Dashboard() {
       <div className="dashboard-header">
         <div>
           <h1>Hey, {profile?.name || 'there'}</h1>
-          <p className="subtitle">Your dream job headquarters</p>
+          <p className="subtitle">Your corner of the board</p>
         </div>
         <Link href="/profile" className="btn btn-secondary btn-sm">Edit Profile</Link>
       </div>
@@ -72,9 +72,9 @@ export default function Dashboard() {
         <div>
           {myJobs.length === 0 ? (
             <div className="empty">
-              <p>You haven&apos;t posted any jobs yet.</p>
+              <p>You haven&apos;t made up any jobs yet. Go on.</p>
               <Link href="/post" className="btn btn-primary" style={{ marginTop: '1rem', display: 'inline-block' }}>
-                Post Your First Dream Job
+                Make one up
               </Link>
             </div>
           ) : (
@@ -98,9 +98,9 @@ export default function Dashboard() {
         <div>
           {myApps.length === 0 ? (
             <div className="empty">
-              <p>You haven&apos;t applied to any jobs yet.</p>
+              <p>You haven&apos;t applied to anything yet. Feeling shy?</p>
               <Link href="/jobs" className="btn btn-primary" style={{ marginTop: '1rem', display: 'inline-block' }}>
-                Browse Dream Jobs
+                Browse the board
               </Link>
             </div>
           ) : (
@@ -122,7 +122,7 @@ export default function Dashboard() {
       {tab === 'payments' && (
         <div>
           {myPayments.length === 0 ? (
-            <div className="empty"><p>No payments yet.</p></div>
+            <div className="empty"><p>No money moved yet. Stay tuned.</p></div>
           ) : (
             myPayments.map(p => (
               <div key={p.id} className="card">

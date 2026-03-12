@@ -134,7 +134,7 @@ export default function JobDetail() {
   }
 
   async function handleHire(application) {
-    if (!confirm(`Hire ${application.profiles?.name || 'this person'}? This will simulate a payment.`)) return;
+    if (!confirm(`Hire ${application.profiles?.name || 'this person'}? You're about to make someone's dream job real.`)) return;
 
     const amount = job.price || 0;
     const platformFee = +(amount * 0.15).toFixed(2);
@@ -194,14 +194,14 @@ export default function JobDetail() {
         {/* Funding section */}
         {job.funding_goal && (
           <div className="card" style={{ marginTop: '2rem' }}>
-            <h3>Funding Progress</h3>
+            <h3>Making it real</h3>
             <div className="funding-detail">
               <div className="progress-bar progress-bar-lg">
                 <div className="progress-fill" style={{ width: `${fundingProgress}%` }} />
               </div>
               <div className="funding-stats">
-                <span className="funding-amount">${pledgeTotal.toFixed(0)} raised</span>
-                <span className="funding-goal">of ${job.funding_goal} goal</span>
+                <span className="funding-amount">${pledgeTotal.toFixed(0)} in the pot</span>
+                <span className="funding-goal">${job.funding_goal} to make it real</span>
               </div>
             </div>
 
@@ -218,22 +218,22 @@ export default function JobDetail() {
 
             {user && !isCreator && (
               <button className="btn btn-secondary" style={{ marginTop: '1rem' }} onClick={() => setShowFund(!showFund)}>
-                {showFund ? 'Cancel' : 'Fund This Dream'}
+                {showFund ? 'Nevermind' : 'Throw Money At This'}
               </button>
             )}
 
             {showFund && (
               <form onSubmit={handleFund} style={{ marginTop: '1rem' }}>
                 <div className="field">
-                  <label htmlFor="amount">Pledge Amount ($) *</label>
+                  <label htmlFor="amount">How much? ($) *</label>
                   <input name="amount" id="amount" type="number" min="1" step="0.01" required />
                 </div>
                 <div className="field">
-                  <label htmlFor="fund-message">Message (optional)</label>
-                  <input name="message" id="fund-message" placeholder="Why are you funding this?" />
+                  <label htmlFor="fund-message">Say something (optional)</label>
+                  <input name="message" id="fund-message" placeholder="Why does this job need to exist?" />
                 </div>
                 <button type="submit" className="btn btn-primary" disabled={submitting}>
-                  {submitting ? 'Pledging...' : 'Pledge'}
+                  {submitting ? 'Throwing...' : 'Make it rain'}
                 </button>
               </form>
             )}
@@ -244,26 +244,26 @@ export default function JobDetail() {
         {user && !isCreator && (job.status === 'hiring' || job.status === 'dreaming') && (
           <div style={{ marginTop: '2rem' }}>
             <button className="btn btn-primary" onClick={() => setShowApply(!showApply)}>
-              {showApply ? 'Cancel' : 'Help Make This Real'}
+              {showApply ? 'Nevermind' : 'I want this job'}
             </button>
 
             {showApply && (
               <form onSubmit={handleApply} className="card" style={{ marginTop: '1rem' }}>
-                <h3>Your Application</h3>
+                <h3>Convince them</h3>
                 <div className="field">
-                  <label htmlFor="message">Why you?</label>
-                  <textarea name="message" id="message" placeholder="What draws you to this work?" />
+                  <label htmlFor="message">Why should you get this made-up job?</label>
+                  <textarea name="message" id="message" placeholder="What makes you the one?" />
                 </div>
                 <div className="field">
-                  <label htmlFor="availability">Availability</label>
-                  <input name="availability" id="availability" placeholder="e.g. Weekends, 10 hrs/week" />
+                  <label htmlFor="availability">When are you free?</label>
+                  <input name="availability" id="availability" placeholder="e.g. Weekends, Tuesday afternoons, always" />
                 </div>
                 <div className="field">
                   <label htmlFor="proposed_rate">Proposed Rate ($/hr, optional)</label>
                   <input name="proposed_rate" id="proposed_rate" type="number" min="0" step="0.01" />
                 </div>
                 <button type="submit" className="btn btn-primary" disabled={submitting}>
-                  {submitting ? 'Sending...' : 'Send Application'}
+                  {submitting ? 'Sending...' : 'Throw your hat in'}
                 </button>
               </form>
             )}
@@ -272,16 +272,16 @@ export default function JobDetail() {
 
         {!user && !authLoading && (
           <div style={{ marginTop: '2rem' }}>
-            <Link href="/login" className="btn btn-primary">Log in to apply or fund</Link>
+            <Link href="/login" className="btn btn-primary">Log in to get in on this</Link>
           </div>
         )}
 
         {/* Applications section (creator only) */}
         {isCreator && (
           <div style={{ marginTop: '2rem' }}>
-            <h2>Applications ({applications.length})</h2>
+            <h2>People who want this job ({applications.length})</h2>
             {applications.length === 0 ? (
-              <p className="empty">No applications yet.</p>
+              <p className="empty">Nobody&apos;s applied yet. Give it time.</p>
             ) : (
               applications.map(app => (
                 <div key={app.id} className="card">

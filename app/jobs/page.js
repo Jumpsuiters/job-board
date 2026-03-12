@@ -65,8 +65,8 @@ export default function Jobs() {
 
   return (
     <main>
-      <h1>Dream Jobs</h1>
-      <p className="subtitle">Work worth doing, posted by people who care.</p>
+      <h1>Jobs People Made Up</h1>
+      <p className="subtitle">Real money. Imaginary careers. Somehow it works.</p>
 
       <div className="feed-controls">
         <div className="filter-bar">
@@ -83,9 +83,9 @@ export default function Jobs() {
 
       {filtered.length === 0 ? (
         <div className="empty">
-          <p>No jobs yet. Be the first to dream one up!</p>
+          <p>Nothing here yet. Someone&apos;s gotta go first.</p>
           <Link href="/post" className="btn btn-primary" style={{ marginTop: '1rem', display: 'inline-block' }}>
-            Post a Dream Job
+            Make Up a Job
           </Link>
         </div>
       ) : (

@@ -35,8 +35,8 @@ export default function Login() {
   return (
     <main>
       <div className="auth-page">
-        <h1>Welcome back</h1>
-        <p className="subtitle">Log in to your account</p>
+        <h1>You again</h1>
+        <p className="subtitle">Welcome back to the weirdest job board on the internet</p>
 
         {error && <div className="error-msg">{error}</div>}
 

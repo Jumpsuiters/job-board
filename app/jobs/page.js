@@ -7,6 +7,7 @@ import { supabase } from '../../lib/supabase';
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     async function fetchJobs() {
@@ -21,6 +22,8 @@ export default function Jobs() {
     fetchJobs();
   }, []);
 
+  const filtered = filter === 'all' ? jobs : jobs.filter(j => j.job_type === filter);
+
   if (loading) return <main><p className="empty">Loading dream jobs...</p></main>;
 
   return (
@@ -30,7 +33,13 @@ export default function Jobs() {
         Work worth doing, posted by people who care.
       </p>
 
-      {jobs.length === 0 ? (
+      <div className="filter-bar">
+        <button className={`filter-btn ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>All</button>
+        <button className={`filter-btn ${filter === 'local' ? 'active' : ''}`} onClick={() => setFilter('local')}>Local</button>
+        <button className={`filter-btn ${filter === 'virtual' ? 'active' : ''}`} onClick={() => setFilter('virtual')}>Virtual</button>
+      </div>
+
+      {filtered.length === 0 ? (
         <div className="empty">
           <p>No jobs yet. Be the first to dream one up!</p>
           <Link href="/post" className="btn btn-primary" style={{ marginTop: '1rem', display: 'inline-block' }}>
@@ -38,11 +47,16 @@ export default function Jobs() {
           </Link>
         </div>
       ) : (
-        jobs.map(job => (
+        filtered.map(job => (
           <div key={job.id} className="card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
               <h3>{job.title}</h3>
-              {job.category && <span className="badge">{job.category}</span>}
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <span className={`badge ${job.job_type === 'virtual' ? 'badge-virtual' : 'badge-local'}`}>
+                  {job.job_type === 'virtual' ? 'Virtual' : 'Local'}
+                </span>
+                {job.category && <span className="badge">{job.category}</span>}
+              </div>
             </div>
             <div className="meta">
               {job.pay && <span>{job.pay}</span>}

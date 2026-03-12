@@ -241,3 +241,82 @@ textarea {
   padding: 3rem;
   color: var(--text-muted);
 }
+
+/* Type toggle on post form */
+.type-toggle {
+  display: flex;
+  gap: 1rem;
+}
+
+.type-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.type-option:has(input:checked) {
+  border-color: var(--accent);
+  background: rgba(240, 192, 64, 0.08);
+}
+
+.type-option input {
+  display: none;
+}
+
+.type-label {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.type-desc {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.2rem;
+}
+
+/* Filter bar on jobs page */
+.filter-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-btn {
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.filter-btn.active {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+
+/* Badge variants */
+.badge-local {
+  background: rgba(100, 200, 120, 0.15);
+  color: #6cc880;
+}
+
+.badge-virtual {
+  background: rgba(100, 160, 240, 0.15);
+  color: #70a8f0;
+}

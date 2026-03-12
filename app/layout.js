@@ -1,5 +1,6 @@
 import './globals.css';
-import Link from 'next/link';
+import { AuthProvider } from '../components/AuthProvider';
+import Nav from '../components/Nav';
 
 export const metadata = {
   title: 'The JOB Board',
@@ -10,15 +11,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <nav>
-          <Link href="/" className="logo">The JOB Board</Link>
-          <div className="links">
-            <Link href="/">Home</Link>
-            <Link href="/jobs">Jobs</Link>
-            <Link href="/post">Post a Job</Link>
-          </div>
-        </nav>
-        {children}
+        <AuthProvider>
+          <Nav />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

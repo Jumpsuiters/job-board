@@ -29,9 +29,12 @@ export default function AdminDashboard() {
   }, [loading, user]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      if (!loading) setFetching(false);
+      return;
+    }
     fetchAll();
-  }, [user]);
+  }, [user, loading]);
 
   async function fetchAll() {
     try {
@@ -201,7 +204,9 @@ export default function AdminDashboard() {
     setFetching(false);
   }
 
-  if (loading || fetching) return <main><p className="empty">Loading dashboard...</p></main>;
+  if (loading) return <main><p className="empty">Checking auth...</p></main>;
+  if (!user) return <main><p className="empty">Please <a href="/login">log in</a> to view the dashboard.</p></main>;
+  if (fetching) return <main><p className="empty">Loading dashboard...</p></main>;
   if (error) return <main><p className="error-msg">Error: {error}</p></main>;
   if (!data) return <main><p className="empty">No data.</p></main>;
 

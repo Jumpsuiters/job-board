@@ -55,6 +55,19 @@ export default function Login() {
         </form>
 
         <p className="auth-switch">
+          <a href="#" onClick={async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            if (!email) { alert('Enter your email first.'); return; }
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+              redirectTo: window.location.origin + '/login',
+            });
+            if (error) alert(error.message);
+            else alert('Check your email for a reset link.');
+          }}>Forgot password?</a>
+        </p>
+
+        <p className="auth-switch">
           Don&apos;t have an account? <Link href="/signup">Sign up</Link>
         </p>
       </div>

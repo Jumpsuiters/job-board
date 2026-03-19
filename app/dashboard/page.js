@@ -178,6 +178,13 @@ export default function Dashboard() {
                         </button>
                       </div>
                     )}
+                    {b.status === 'completed' && (
+                      <div style={{ marginTop: '0.75rem' }}>
+                        <Link href={`/jobs/${b.job_id}`} className="btn btn-primary btn-sm">
+                          Leave a Review
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 ))
               )}

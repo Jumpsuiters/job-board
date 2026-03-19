@@ -12,19 +12,17 @@ export default function Nav() {
       <div className="links">
         <Link href="/jobs">Jobs</Link>
         <Link href="/post">Post a Job</Link>
-        {!loading && (
-          user ? (
-            <>
-              <Link href="/dashboard">Dashboard</Link>
-              {profile?.slug && <Link href={`/u/${profile.slug}`}>My Page</Link>}
-              <button onClick={signOut} className="nav-btn">Log out</button>
-            </>
-          ) : (
-            <>
-              <Link href="/login">Log in</Link>
-              <Link href="/signup" className="btn btn-primary btn-sm">Sign up</Link>
-            </>
-          )
+        {user ? (
+          <>
+            <Link href="/dashboard">Dashboard</Link>
+            {profile?.slug && <Link href={`/u/${profile.slug}`}>My Page</Link>}
+            <button onClick={signOut} className="nav-btn">Log out</button>
+          </>
+        ) : !loading && (
+          <>
+            <Link href="/login">Log in</Link>
+            <Link href="/signup" className="btn btn-primary btn-sm">Sign up</Link>
+          </>
         )}
       </div>
     </nav>

@@ -20,7 +20,11 @@ export default function Jobs() {
         .select('*, profiles!jobs_user_id_fkey(name, avatar_url)')
         .order('created_at', { ascending: false });
 
-      if (!error && data) {
+      if (error) {
+        console.error('Jobs fetch error:', error);
+        alert('Error loading jobs: ' + error.message);
+      }
+      if (data) {
         setJobs(data);
       }
       setLoading(false);

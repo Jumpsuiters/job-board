@@ -17,13 +17,40 @@ export function AuthProvider({ children }) {
       .select('*')
       .eq('id', userId)
       .single();
-    setProfile(data);
+
+    if (data) {
+      setProfile(data);
+    } else {
+      // Profile missing (trigger may have failed) — create one
+      const { data: { user: u } } = await supabase.auth.getUser();
+      const name = u?.user_metadata?.name || '';
+      const slug = userId.replace(/-/g, '');
+      await supabase.from('profiles').insert({
+        id: userId,
+        name,
+        slug,
+      });
+      const { data: newProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      setProfile(newProfile);
+    }
   }
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user: u } }) => {
+    supabase.auth.getUser().then(({ data: { user: u }, error }) => {
+      if (error || !u) {
+        setUser(null);
+        setProfile(null);
+        setLoading(false);
+        return;
+      }
       setUser(u);
-      if (u) fetchProfile(u.id);
+      fetchProfile(u.id).finally(() => setLoading(false));
+    }).catch(() => {
+      setUser(null);
       setLoading(false);
     });
 

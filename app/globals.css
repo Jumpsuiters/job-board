@@ -38,6 +38,7 @@ body {
 
 a { color: var(--text); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
 a:hover { color: var(--accent-hover); }
+a.btn-primary, a.btn-primary:hover, a.btn-primary:visited { color: #fde84a !important; }
 
 /* ============================================
    NAV
@@ -156,7 +157,7 @@ h3 {
 
 .hero p {
   color: var(--text-muted);
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   margin-bottom: 2.5rem;
   max-width: 480px;
   margin-left: auto;
@@ -166,8 +167,16 @@ h3 {
 
 .how-it-works {
   text-align: center;
-  padding: 2rem 0;
+  padding: 2.5rem 0;
   border-top: 1px solid var(--border);
+}
+
+.manifesto {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text);
+  max-width: 520px;
+  margin: 0 auto 2.5rem;
 }
 
 .how-it-works h2 {
@@ -176,6 +185,135 @@ h3 {
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   margin-bottom: 2rem;
+}
+
+/* Featured jobs */
+.featured-section {
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.featured-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.featured-card:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-hover);
+}
+
+.featured-card {
+  text-decoration: none !important;
+  color: var(--text);
+}
+
+.featured-card h3 {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.featured-photo {
+  margin: -1.25rem -1.25rem 0.75rem;
+  border-radius: var(--radius) var(--radius) 0 0;
+  overflow: hidden;
+}
+
+.featured-photo img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.featured-author {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.featured-author-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.featured-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-top: auto;
+}
+
+/* Human Roulette */
+.roulette-section {
+  text-align: center;
+  padding: 3rem 0 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.roulette-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.roulette-desc {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.roulette-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.roulette-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.roulette-dollar {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.roulette-input {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  background: var(--surface);
+  width: 100%;
+}
+
+.roulette-input:focus {
+  border-color: var(--text);
 }
 
 .steps {
@@ -239,11 +377,11 @@ h3 {
 .btn:active { transform: scale(0.97); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.btn-primary {
+.btn-primary, a.btn-primary {
   background: var(--text);
-  color: var(--bg);
+  color: #fde84a;
 }
-.btn-primary:hover { background: var(--accent-hover); color: var(--bg); }
+.btn-primary:hover, a.btn-primary:hover { background: var(--accent-hover); color: #fde84a; }
 
 .btn-secondary {
   background: var(--surface);
@@ -336,11 +474,10 @@ h3 {
 .badge-local { background: var(--green-dim); color: var(--green); }
 .badge-virtual { background: var(--blue-dim); color: var(--blue); }
 
-.badge-dreaming { background: var(--purple-dim); color: var(--purple); }
-.badge-funding { background: var(--blue-dim); color: var(--blue); }
-.badge-hiring { background: var(--accent-dim); color: var(--accent); }
+.badge-open { background: var(--purple-dim); color: var(--purple); }
 .badge-in_progress { background: var(--green-dim); color: var(--green); }
 .badge-completed { background: rgba(255,255,255,0.06); color: var(--text-muted); }
+.badge-now { background: var(--green-dim); color: var(--green); }
 
 /* ============================================
    FORMS
@@ -475,6 +612,48 @@ select {
   padding: 0.35rem 2rem 0.35rem 0.75rem;
   font-size: 0.85rem;
   border-radius: 6px;
+}
+
+/* Available Now green dot */
+.now-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-right: 0.35rem;
+  vertical-align: middle;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.filter-now {
+  margin-left: auto;
+}
+
+.filter-now .now-dot {
+  margin-right: 0.3rem;
+}
+
+.filter-now.active {
+  background: var(--green-dim);
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.badge-now .now-dot {
+  width: 6px;
+  height: 6px;
+  margin-right: 0.25rem;
+}
+
+.badge-now {
+  background: var(--green-dim);
+  color: var(--green);
 }
 
 /* ============================================
@@ -670,6 +849,589 @@ select {
 }
 
 /* ============================================
+   SEARCH INPUT
+   ============================================ */
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 220px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.35rem 2rem 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.search-clear {
+  position: absolute;
+  right: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 0.2rem;
+}
+
+.search-clear:hover { color: var(--text); }
+
+/* ============================================
+   HIRE COUNT BADGE
+   ============================================ */
+
+.badge-hires {
+  background: var(--green-dim);
+  color: var(--green);
+}
+
+/* ============================================
+   BOOKING SECTION
+   ============================================ */
+
+.booking-section {
+  border-color: var(--green);
+}
+
+.booking-breakdown {
+  background: var(--accent-dim);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.booking-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  padding: 0.2rem 0;
+  color: var(--text-muted);
+}
+
+.booking-total {
+  font-weight: 700;
+  color: var(--text);
+  border-top: 1px solid var(--border);
+  margin-top: 0.3rem;
+  padding-top: 0.4rem;
+}
+
+/* ============================================
+   AI NUDGE
+   ============================================ */
+
+.nudge-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid #f59e0b;
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.nudge-msg {
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.nudge-suggestion {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+  line-height: 1.5;
+}
+
+.nudge-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* ============================================
+   RATE FIELDS
+   ============================================ */
+
+.rate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.rate-field label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+.rate-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.rate-dollar {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.rate-input-wrap input {
+  width: 100%;
+}
+
+.rate-display {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.rate-tag {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.rate-tag small {
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-left: 0.15rem;
+}
+
+/* ============================================
+   PHOTOS & AVATARS
+   ============================================ */
+
+.card-photo {
+  margin: -1.25rem -1.25rem 1rem;
+  border-radius: var(--radius) var(--radius) 0 0;
+  overflow: hidden;
+  max-height: 200px;
+}
+
+.card-photo img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.card-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.detail-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.posted-by {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.job-detail-photo {
+  margin-bottom: 1.5rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.job-detail-photo img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-upload input[type="file"] {
+  display: none;
+}
+
+.photo-dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.photo-dropzone:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-hover);
+}
+
+.photo-preview {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.photo-preview img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-remove {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-upload input[type="file"] {
+  display: none;
+}
+
+.avatar-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar-preview img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-change {
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.75rem;
+}
+
+.profile-rating {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* ============================================
+   REVIEWS
+   ============================================ */
+
+.reviews-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.review-form {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.review-form textarea {
+  min-height: 80px;
+}
+
+.star-select {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--border);
+  transition: color 0.1s;
+  padding: 0;
+}
+
+.star-btn.active {
+  color: #f59e0b;
+}
+
+.review-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.review-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.review-stars {
+  color: #f59e0b;
+  font-size: 0.85rem;
+}
+
+.review-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.badge-rating {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+/* ============================================
+   PUBLIC PROFILE
+   ============================================ */
+
+.public-profile {
+  padding-top: 1rem;
+}
+
+.profile-header {
+  margin-bottom: 1rem;
+}
+
+.profile-location {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.profile-bio {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-num {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.profile-available {
+  margin-bottom: 1.5rem;
+}
+
+.profile-available h3 {
+  margin-bottom: 0.25rem;
+}
+
+.profile-available p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.profile-section {
+  margin-top: 2rem;
+}
+
+.profile-section h2 {
+  margin-bottom: 1rem;
+}
+
+.profile-link-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.field-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ============================================
+   STIPEND FORM
+   ============================================ */
+
+.stipend-form {
+  margin-top: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+/* ============================================
+   BOOKING FLOW — RATE SELECTOR
+   ============================================ */
+
+.rate-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.rate-option {
+  flex: 1;
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.rate-option:has(input:checked),
+.rate-option.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.rate-option input { display: none; }
+
+.rate-option-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.rate-option-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+/* Booking message textarea */
+.booking-message {
+  min-height: 80px;
+}
+
+/* Request card in dashboard */
+.request-card {
+  border-left: 3px solid var(--border);
+}
+
+.request-card:has(.badge-pending) {
+  border-left-color: #f59e0b;
+}
+
+.request-card:has(.badge-confirmed) {
+  border-left-color: var(--blue);
+}
+
+.request-card:has(.badge-completed) {
+  border-left-color: var(--green);
+}
+
+/* Approve/Decline button group */
+.request-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Status badge colors */
+.badge-pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.badge-confirmed {
+  background: var(--blue-dim);
+  color: var(--blue);
+}
+
+.badge-completed {
+  background: var(--green-dim);
+  color: var(--green);
+}
+
+.badge-declined {
+  background: var(--accent-dim);
+  color: var(--text-muted);
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 
@@ -678,6 +1440,7 @@ select {
   nav .links { gap: 0.75rem; font-size: 0.85rem; }
   .hero h1 { font-size: 2rem; }
   .steps { grid-template-columns: 1fr; gap: 0.5rem; }
+  .featured-grid { grid-template-columns: 1fr; }
   .feed-controls { flex-direction: column; align-items: stretch; }
   .dashboard-header { flex-direction: column; gap: 1rem; }
 }

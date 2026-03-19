@@ -6,20 +6,20 @@ import Link from 'next/link';
 
 const messages = {
   posted: {
-    title: 'It exists now.',
-    text: "Your made-up job is live. Let's see if the world agrees it should be real.",
+    title: 'You\'re live.',
+    text: "Your job is out there. Now let's see who shows up.",
   },
-  applied: {
-    title: 'Hat thrown.',
-    text: "You just applied for a job that didn't exist five minutes ago. What a time to be alive.",
+  booked: {
+    title: 'Booked.',
+    text: "You just booked someone for their thing. They're going to love this.",
   },
-  funded: {
-    title: 'Money where your mouth is.',
-    text: "You just paid to make someone else's dream job real. That's kind of beautiful.",
+  requested: {
+    title: 'Request sent.',
+    text: "The provider will review your request and get back to you. Sit tight.",
   },
-  hired: {
-    title: 'It happened.',
-    text: "Someone just got hired for a job that was made up. The future is weird and good.",
+  stipend: {
+    title: 'Generosity unlocked.',
+    text: "You just sent someone a stipend. That's the kind of support that changes things.",
   },
 };
 
@@ -34,7 +34,7 @@ function SuccessContent() {
         <h1>{msg.title}</h1>
         <p>{msg.text}</p>
         <div className="cta-group">
-          <Link href="/jobs" className="btn btn-primary">See more made-up jobs</Link>
+          <Link href="/jobs" className="btn btn-primary">Browse more jobs</Link>
           <Link href="/dashboard" className="btn btn-secondary">Dashboard</Link>
         </div>
       </div>

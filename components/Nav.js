@@ -11,11 +11,12 @@ export default function Nav() {
       <Link href="/" className="logo">The JOB Board</Link>
       <div className="links">
         <Link href="/jobs">Jobs</Link>
-        <Link href="/post">Make Up a Job</Link>
+        <Link href="/post">Post a Job</Link>
         {!loading && (
           user ? (
             <>
               <Link href="/dashboard">Dashboard</Link>
+              {profile?.slug && <Link href={`/u/${profile.slug}`}>My Page</Link>}
               <button onClick={signOut} className="nav-btn">Log out</button>
             </>
           ) : (

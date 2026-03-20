@@ -26,6 +26,7 @@ const messages = {
 function SuccessContent() {
   const searchParams = useSearchParams();
   const action = searchParams.get('action');
+  const bookingId = searchParams.get('bookingId');
   const msg = messages[action] || messages.posted;
 
   return (
@@ -34,7 +35,10 @@ function SuccessContent() {
         <h1>{msg.title}</h1>
         <p>{msg.text}</p>
         <div className="cta-group">
-          <Link href="/jobs" className="btn btn-primary">Browse more jobs</Link>
+          {bookingId && (
+            <Link href={`/bookings/${bookingId}`} className="btn btn-primary">View booking details</Link>
+          )}
+          <Link href="/jobs" className={bookingId ? 'btn btn-secondary' : 'btn btn-primary'}>Browse more jobs</Link>
           <Link href="/dashboard" className="btn btn-secondary">Dashboard</Link>
         </div>
       </div>

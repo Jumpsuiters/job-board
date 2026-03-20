@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../../../../components/AuthProvider';
 import { uploadFile } from '../../../../lib/upload';
+import Modal from '../../../../components/Modal';
 
 const CATEGORIES = [
   'Presence', 'Creativity', 'Support', 'Advice', 'Experimental'
@@ -22,6 +23,7 @@ export default function EditJob() {
   const [bookingMode, setBookingMode] = useState('instant');
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) router.push('/login');
@@ -92,7 +94,6 @@ export default function EditJob() {
   }
 
   async function handleDelete() {
-    if (!confirm('Delete this job? This cannot be undone.')) return;
     await supabase.from('jobs').delete().eq('id', id);
     router.push('/dashboard');
   }
@@ -247,10 +248,20 @@ export default function EditJob() {
       </form>
 
       <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)' }}>
-        <button className="btn btn-secondary" onClick={handleDelete} style={{ color: 'var(--red)' }}>
+        <button className="btn btn-secondary" onClick={() => setShowDeleteModal(true)} style={{ color: 'var(--red)' }}>
           Delete this job
         </button>
       </div>
+
+      <Modal
+        open={showDeleteModal}
+        title="Delete this job?"
+        message="This cannot be undone."
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+        confirmLabel="Delete"
+        confirmVariant="primary"
+      />
     </main>
   );
 }

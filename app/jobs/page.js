@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '../../lib/supabase';
+import Modal from '../../components/Modal';
 
 export default function Jobs() {
   const supabase = createClient();
@@ -12,6 +13,8 @@ export default function Jobs() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [nowOnly, setNowOnly] = useState(false);
   const [search, setSearch] = useState('');
+  const [modal, setModal] = useState({ open: false, title: '', message: '' });
+  const closeModal = () => setModal({ open: false, title: '', message: '' });
 
   useEffect(() => {
     async function fetchJobs() {
@@ -22,7 +25,7 @@ export default function Jobs() {
 
       if (error) {
         console.error('Jobs fetch error:', error);
-        alert('Error loading jobs: ' + error.message);
+        setModal({ open: true, title: 'Error', message: 'Error loading jobs: ' + error.message });
       }
       if (data) {
         setJobs(data);
@@ -156,6 +159,8 @@ export default function Jobs() {
           </Link>
         ))
       )}
+
+      <Modal open={modal.open} title={modal.title} message={modal.message} onClose={closeModal} />
     </main>
   );
 }

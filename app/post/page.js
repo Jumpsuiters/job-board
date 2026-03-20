@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../components/AuthProvider';
 import { uploadFile } from '../../lib/upload';
+import Modal from '../../components/Modal';
 
 const CATEGORIES = [
   'Presence', 'Creativity', 'Support', 'Advice', 'Experimental'
@@ -20,6 +21,9 @@ export default function PostJob() {
   const [nudge, setNudge] = useState(null);
   const [nudgeAcknowledged, setNudgeAcknowledged] = useState(false);
   const [checkingNudge, setCheckingNudge] = useState(false);
+  const [modal, setModal] = useState({ open: false, title: '', message: '' });
+  const showAlert = (title, message) => setModal({ open: true, title, message });
+  const closeModal = () => setModal({ open: false, title: '', message: '' });
 
   useEffect(() => {
     if (!loading && !user) router.push('/login');
@@ -59,14 +63,14 @@ export default function PostJob() {
     }
 
     if (!photoFile) {
-      alert('Please add a photo.');
+      showAlert('Missing photo', 'Please add a photo.');
       return;
     }
 
     const form = new FormData(e.target);
     const hasRate = form.get('price') || form.get('price_half_day') || form.get('price_day') || form.get('price_week');
     if (!hasRate) {
-      alert('Please set at least one rate.');
+      showAlert('Missing rate', 'Please set at least one rate.');
       return;
     }
 
@@ -77,7 +81,7 @@ export default function PostJob() {
       try {
         photo_url = await uploadFile(supabase, photoFile, 'jobs');
       } catch (err) {
-        alert('Photo upload failed: ' + err.message);
+        showAlert('Upload failed', 'Photo upload failed: ' + err.message);
         setSubmitting(false);
         return;
       }
@@ -103,7 +107,7 @@ export default function PostJob() {
     const { error } = await supabase.from('jobs').insert(job);
 
     if (error) {
-      alert('Something went wrong: ' + error.message);
+      showAlert('Error', 'Something went wrong: ' + error.message);
       setSubmitting(false);
       return;
     }
@@ -310,6 +314,8 @@ export default function PostJob() {
           {submitting ? 'Posting...' : 'Post it'}
         </button>
       </form>
+
+      <Modal open={modal.open} title={modal.title} message={modal.message} onClose={closeModal} />
     </main>
   );
 }

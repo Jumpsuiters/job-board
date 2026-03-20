@@ -1510,6 +1510,131 @@ select {
    RESPONSIVE
    ============================================ */
 
+/* ============================================
+   MODALS
+   ============================================ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-box {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+/* ============================================
+   BOOKING DETAIL / RECEIPT
+   ============================================ */
+
+.booking-detail {
+  padding-top: 0.5rem;
+}
+
+/* ============================================
+   MESSAGES
+   ============================================ */
+
+.messages-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.message-thread {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.message-bubble {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  max-width: 85%;
+}
+
+.message-bubble.message-mine {
+  align-self: flex-end;
+  background: var(--accent-dim);
+}
+
+.message-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.message-meta strong {
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.message-bubble p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.message-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.message-form input {
+  flex: 1;
+}
+
+/* ============================================
+   BADGE — CANCELLED
+   ============================================ */
+
+.badge-cancelled {
+  background: var(--accent-dim);
+  color: var(--text-muted);
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+  nav, .back-link, .modal-overlay, .messages-section,
+  .btn, button, .message-form { display: none !important; }
+  body { background: #fff; }
+  main { padding: 1rem; }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
 @media (max-width: 600px) {
   nav { padding: 0.75rem 1rem; }
   nav .links { gap: 0.75rem; font-size: 0.85rem; }

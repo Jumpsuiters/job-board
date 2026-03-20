@@ -4,12 +4,16 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '../../lib/supabase';
+import Modal from '../../components/Modal';
 
 export default function Login() {
   const router = useRouter();
   const supabase = createClient();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState({ open: false, title: '', message: '' });
+  const showAlert = (title, message) => setModal({ open: true, title, message });
+  const closeModal = () => setModal({ open: false, title: '', message: '' });
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -58,12 +62,12 @@ export default function Login() {
           <a href="#" onClick={async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
-            if (!email) { alert('Enter your email first.'); return; }
+            if (!email) { showAlert('Missing email', 'Enter your email first.'); return; }
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
               redirectTo: window.location.origin + '/login',
             });
-            if (error) alert(error.message);
-            else alert('Check your email for a reset link.');
+            if (error) showAlert('Error', error.message);
+            else showAlert('Check your email', 'Check your email for a reset link.');
           }}>Forgot password?</a>
         </p>
 
@@ -71,6 +75,8 @@ export default function Login() {
           Don&apos;t have an account? <Link href="/signup">Sign up</Link>
         </p>
       </div>
+
+      <Modal open={modal.open} title={modal.title} message={modal.message} onClose={closeModal} />
     </main>
   );
 }

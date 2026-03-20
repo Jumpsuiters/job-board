@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../../../components/AuthProvider';
+import Modal from '../../../components/Modal';
 
 const RATE_OPTIONS = [
   { key: 'price', field: 'price', label: 'Per hour', type: 'hourly' },
@@ -27,6 +28,11 @@ export default function JobDetail() {
   const [selectedRate, setSelectedRate] = useState(null);
   const [requestedTime, setRequestedTime] = useState('');
   const [bookingMessage, setBookingMessage] = useState('');
+
+  // Modal state
+  const [modal, setModal] = useState({ open: false, title: '', message: '', onConfirm: null });
+  const showAlert = (title, message) => setModal({ open: true, title, message, onConfirm: null });
+  const closeModal = () => setModal({ open: false, title: '', message: '', onConfirm: null });
 
   const isCreator = user && job && user.id === job.user_id;
 
@@ -91,17 +97,17 @@ export default function JobDetail() {
 
   async function handleBook() {
     if (!selectedRate) {
-      alert('Please select a rate.');
+      showAlert('Missing rate', 'Please select a rate.');
       return;
     }
     if (job.availability === 'scheduled' && !requestedTime) {
-      alert('Please pick a date & time for this session.');
+      showAlert('Missing time', 'Please pick a date & time for this session.');
       return;
     }
 
     const isRequest = job.booking_mode === 'request';
     if (isRequest && !bookingMessage.trim()) {
-      alert('Please include a message about what you need.');
+      showAlert('Missing message', 'Please include a message about what you need.');
       return;
     }
 
@@ -109,40 +115,55 @@ export default function JobDetail() {
     const platformFee = +(amount * 0.20).toFixed(2);
     const workerAmount = +(amount - platformFee).toFixed(2);
 
-    const label = isRequest ? 'Send this booking request' : `Book this person for $${amount}`;
-    if (!confirm(`${label}?`)) return;
-    setSubmitting(true);
+    const label = isRequest ? 'Send this booking request?' : `Book this person for $${amount}?`;
+    setModal({
+      open: true,
+      title: isRequest ? 'Confirm request' : 'Confirm booking',
+      message: label,
+      onConfirm: async () => {
+        closeModal();
+        setSubmitting(true);
 
-    const booking = {
-      job_id: id,
-      worker_id: job.user_id,
-      booker_id: user.id,
-      amount,
-      platform_fee: platformFee,
-      worker_amount: workerAmount,
-      status: isRequest ? 'pending' : 'confirmed',
-      rate_type: selectedRate,
-      requested_time: requestedTime || null,
-      message: isRequest ? bookingMessage : null,
-    };
+        const booking = {
+          job_id: id,
+          worker_id: job.user_id,
+          booker_id: user.id,
+          amount,
+          platform_fee: platformFee,
+          worker_amount: workerAmount,
+          status: isRequest ? 'pending' : 'confirmed',
+          rate_type: selectedRate,
+          requested_time: requestedTime || null,
+          message: isRequest ? bookingMessage : null,
+        };
 
-    const { error } = await supabase.from('bookings').insert(booking);
+        const { data, error } = await supabase.from('bookings').insert(booking).select('id').single();
 
-    if (error) {
-      alert(error.message);
-      setSubmitting(false);
-      return;
-    }
+        if (error) {
+          showAlert('Error', error.message);
+          setSubmitting(false);
+          return;
+        }
 
-    // Increment hire_count for instant bookings only
-    if (!isRequest) {
-      await supabase.from('jobs').update({
-        hire_count: (job.hire_count || 0) + 1,
-      }).eq('id', id);
-    }
+        // Increment hire_count for instant bookings only
+        if (!isRequest) {
+          await supabase.from('jobs').update({
+            hire_count: (job.hire_count || 0) + 1,
+          }).eq('id', id);
+        }
 
-    setSubmitting(false);
-    router.push(isRequest ? '/success?action=requested' : '/success?action=booked');
+        // Fire-and-forget email
+        const emailType = isRequest ? 'bookingRequested' : 'bookingConfirmed';
+        fetch('/api/email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: emailType, bookingId: data.id }),
+        });
+
+        setSubmitting(false);
+        router.push(isRequest ? `/success?action=requested&bookingId=${data.id}` : `/success?action=booked&bookingId=${data.id}`);
+      },
+    });
   }
 
   async function handleReview(e) {
@@ -159,7 +180,7 @@ export default function JobDetail() {
     });
 
     if (error) {
-      alert(error.message);
+      showAlert('Error', error.message);
       setSubmitting(false);
       return;
     }
@@ -273,9 +294,11 @@ export default function JobDetail() {
             {/* Date picker for scheduled availability */}
             {job.availability === 'scheduled' && (
               <div className="field" style={{ marginBottom: '1rem' }}>
-                <label htmlFor="requested_time">When would you like to do this?</label>
+                <label htmlFor="requested_time">
+                  {selectedRate === 'hourly' ? 'When would you like to do this?' : 'What day works for you?'}
+                </label>
                 <input
-                  type="datetime-local"
+                  type={selectedRate === 'hourly' ? 'datetime-local' : 'date'}
                   id="requested_time"
                   value={requestedTime}
                   onChange={e => setRequestedTime(e.target.value)}
@@ -399,6 +422,15 @@ export default function JobDetail() {
           </div>
         )}
       </div>
+
+      <Modal
+        open={modal.open}
+        title={modal.title}
+        message={modal.message}
+        onClose={closeModal}
+        onConfirm={modal.onConfirm}
+        confirmLabel="Confirm"
+      />
     </main>
   );
 }

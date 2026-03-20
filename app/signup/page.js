@@ -17,11 +17,13 @@ export default function Signup() {
     setError('');
 
     const form = new FormData(e.target);
-    const { error: err } = await supabase.auth.signUp({
-      email: form.get('email'),
+    const email = form.get('email');
+    const name = form.get('name');
+    const { data: signUpData, error: err } = await supabase.auth.signUp({
+      email,
       password: form.get('password'),
       options: {
-        data: { name: form.get('name') },
+        data: { name },
       },
     });
 
@@ -29,6 +31,11 @@ export default function Signup() {
       setError(err.message);
       setLoading(false);
       return;
+    }
+
+    // Save email to profile
+    if (signUpData?.user?.id) {
+      await supabase.from('profiles').update({ email }).eq('id', signUpData.user.id);
     }
 
     router.push('/dashboard');

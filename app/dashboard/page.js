@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../../components/AuthProvider';
+import Modal from '../../components/Modal';
 
 const STATUS_BADGE = {
   pending: 'badge-pending',
@@ -22,6 +23,8 @@ export default function Dashboard() {
   const [myBookings, setMyBookings] = useState([]);
   const [fetching, setFetching] = useState(true);
   const [acting, setActing] = useState(null);
+  const [cancelModal, setCancelModal] = useState({ open: false, bookingId: null });
+  const [cancelReason, setCancelReason] = useState('');
 
   useEffect(() => {
     if (!loading && !user) router.push('/login');
@@ -50,11 +53,16 @@ export default function Dashboard() {
     setActing(bookingId);
     await supabase.from('bookings').update({ status: 'confirmed' }).eq('id', bookingId);
 
-    // Increment hire_count on approval
     const job = myJobs.find(j => j.id === jobId);
     if (job) {
       await supabase.from('jobs').update({ hire_count: (job.hire_count || 0) + 1 }).eq('id', jobId);
     }
+
+    fetch('/api/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'requestApproved', bookingId }),
+    });
 
     setActing(null);
     fetchData();
@@ -63,6 +71,13 @@ export default function Dashboard() {
   async function handleDecline(bookingId) {
     setActing(bookingId);
     await supabase.from('bookings').update({ status: 'declined' }).eq('id', bookingId);
+
+    fetch('/api/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'requestDeclined', bookingId }),
+    });
+
     setActing(null);
     fetchData();
   }
@@ -70,6 +85,35 @@ export default function Dashboard() {
   async function handleComplete(bookingId) {
     setActing(bookingId);
     await supabase.from('bookings').update({ status: 'completed' }).eq('id', bookingId);
+
+    fetch('/api/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'bookingCompleted', bookingId }),
+    });
+
+    setActing(null);
+    fetchData();
+  }
+
+  async function handleCancel() {
+    const bookingId = cancelModal.bookingId;
+    setActing(bookingId);
+    await supabase.from('bookings').update({
+      status: 'cancelled',
+      cancelled_by: user.id,
+      cancelled_at: new Date().toISOString(),
+      cancel_reason: cancelReason || null,
+    }).eq('id', bookingId);
+
+    fetch('/api/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'bookingCancelled', bookingId }),
+    });
+
+    setCancelModal({ open: false, bookingId: null });
+    setCancelReason('');
     setActing(null);
     fetchData();
   }
@@ -156,7 +200,7 @@ export default function Dashboard() {
                 buyerBookings.map(b => (
                   <div key={b.id} className="card request-card">
                     <div className="card-header">
-                      <h3>{b.jobs?.title || 'Job'}</h3>
+                      <Link href={`/bookings/${b.id}`}><h3>{b.jobs?.title || 'Job'}</h3></Link>
                       <span className={`badge ${STATUS_BADGE[b.status] || ''}`}>
                         {b.status}
                       </span>
@@ -167,24 +211,34 @@ export default function Dashboard() {
                       {b.requested_time && <span>{new Date(b.requested_time).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</span>}
                     </div>
                     {b.message && <p className="description" style={{ fontStyle: 'italic', marginTop: '0.5rem' }}>&ldquo;{b.message}&rdquo;</p>}
-                    {b.status === 'confirmed' && (
-                      <div style={{ marginTop: '0.75rem' }}>
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          onClick={() => handleComplete(b.id)}
-                          disabled={acting === b.id}
-                        >
-                          {acting === b.id ? 'Completing...' : 'Mark Complete'}
-                        </button>
-                      </div>
-                    )}
-                    {b.status === 'completed' && (
-                      <div style={{ marginTop: '0.75rem' }}>
+                    <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      {b.status === 'confirmed' && (
+                        <>
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => handleComplete(b.id)}
+                            disabled={acting === b.id}
+                          >
+                            {acting === b.id ? 'Completing...' : 'Mark Complete'}
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => setCancelModal({ open: true, bookingId: b.id })}
+                            disabled={acting === b.id}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      )}
+                      {b.status === 'completed' && (
                         <Link href={`/jobs/${b.job_id}`} className="btn btn-primary btn-sm">
                           Leave a Review
                         </Link>
-                      </div>
-                    )}
+                      )}
+                      <Link href={`/bookings/${b.id}`} className="btn btn-secondary btn-sm">
+                        View Details
+                      </Link>
+                    </div>
                   </div>
                 ))
               )}
@@ -199,7 +253,7 @@ export default function Dashboard() {
                 providerBookings.map(b => (
                   <div key={b.id} className="card request-card">
                     <div className="card-header">
-                      <h3>{b.jobs?.title || 'Job'}</h3>
+                      <Link href={`/bookings/${b.id}`}><h3>{b.jobs?.title || 'Job'}</h3></Link>
                       <span className={`badge ${STATUS_BADGE[b.status] || ''}`}>
                         {b.status}
                       </span>
@@ -211,35 +265,47 @@ export default function Dashboard() {
                       {b.requested_time && <span>{new Date(b.requested_time).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</span>}
                     </div>
                     {b.message && <p className="description" style={{ fontStyle: 'italic', marginTop: '0.5rem' }}>&ldquo;{b.message}&rdquo;</p>}
-                    {b.status === 'pending' && (
-                      <div className="request-actions" style={{ marginTop: '0.75rem' }}>
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() => handleApprove(b.id, b.job_id)}
-                          disabled={acting === b.id}
-                        >
-                          {acting === b.id ? '...' : 'Approve'}
-                        </button>
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          onClick={() => handleDecline(b.id)}
-                          disabled={acting === b.id}
-                        >
-                          Decline
-                        </button>
-                      </div>
-                    )}
-                    {b.status === 'confirmed' && (
-                      <div style={{ marginTop: '0.75rem' }}>
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          onClick={() => handleComplete(b.id)}
-                          disabled={acting === b.id}
-                        >
-                          {acting === b.id ? 'Completing...' : 'Mark Complete'}
-                        </button>
-                      </div>
-                    )}
+                    <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      {b.status === 'pending' && (
+                        <>
+                          <button
+                            className="btn btn-primary btn-sm"
+                            onClick={() => handleApprove(b.id, b.job_id)}
+                            disabled={acting === b.id}
+                          >
+                            {acting === b.id ? '...' : 'Approve'}
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => handleDecline(b.id)}
+                            disabled={acting === b.id}
+                          >
+                            Decline
+                          </button>
+                        </>
+                      )}
+                      {b.status === 'confirmed' && (
+                        <>
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => handleComplete(b.id)}
+                            disabled={acting === b.id}
+                          >
+                            {acting === b.id ? 'Completing...' : 'Mark Complete'}
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => setCancelModal({ open: true, bookingId: b.id })}
+                            disabled={acting === b.id}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      )}
+                      <Link href={`/bookings/${b.id}`} className="btn btn-secondary btn-sm">
+                        View Details
+                      </Link>
+                    </div>
                   </div>
                 ))
               )}
@@ -247,6 +313,23 @@ export default function Dashboard() {
           )}
         </div>
       )}
+
+      <Modal
+        open={cancelModal.open}
+        title="Cancel this booking?"
+        message="Let the other party know why (optional)."
+        onClose={() => { setCancelModal({ open: false, bookingId: null }); setCancelReason(''); }}
+        onConfirm={handleCancel}
+        confirmLabel="Cancel Booking"
+        confirmVariant="primary"
+      >
+        <textarea
+          value={cancelReason}
+          onChange={e => setCancelReason(e.target.value)}
+          placeholder="Reason (optional)"
+          style={{ marginTop: '0.75rem', minHeight: '60px' }}
+        />
+      </Modal>
     </main>
   );
 }

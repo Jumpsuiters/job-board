@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../../../components/AuthProvider';
+import Modal from '../../../components/Modal';
 
 export default function PublicProfile() {
   const { slug } = useParams();
@@ -15,6 +16,9 @@ export default function PublicProfile() {
   const [loading, setLoading] = useState(true);
   const [showStipend, setShowStipend] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [modal, setModal] = useState({ open: false, title: '', message: '' });
+  const showAlert = (title, message) => setModal({ open: true, title, message });
+  const closeModal = () => setModal({ open: false, title: '', message: '' });
 
   useEffect(() => {
     async function fetchProfile() {
@@ -79,7 +83,7 @@ export default function PublicProfile() {
     });
 
     if (error) {
-      alert(error.message);
+      showAlert('Error', error.message);
       setSubmitting(false);
       return;
     }
@@ -223,6 +227,8 @@ export default function PublicProfile() {
           </div>
         )}
       </div>
+
+      <Modal open={modal.open} title={modal.title} message={modal.message} onClose={closeModal} />
     </main>
   );
 }
